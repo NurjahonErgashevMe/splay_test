@@ -13,6 +13,7 @@ import clsx from "clsx";
 import { useDelayedHover } from "@/shared/hooks/useDelayHover";
 import Button from "../Button/Button";
 import getIcon from "@/helpers/getIcon";
+import { prominent } from "color.js";
 interface CardProps extends MovieContent {
   image_src: string;
   video_src: string | null;
@@ -31,15 +32,7 @@ const Card: FC<CardProps> = (props) => {
   const [saved, setSaved] = useState<boolean>(false);
   const [viewElement, setViewElement] = useState<"image" | "video">("image");
   const [muted, setMuted] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (props.video_src && opened) {
-      setTimeout(() => {
-        setViewElement(() => "video");
-      }, 1000);
-    }
-  }, [opened, props.video_src]);
-
+  const [shadowColor, setShadowColor] = useState<string>("");
   const open = (): void => {
     setOpened(() => true);
   };
@@ -52,6 +45,36 @@ const Card: FC<CardProps> = (props) => {
   const mute = () => {
     setMuted((prev) => !prev);
   };
+
+  const cardClose = () => {
+    setMuted(() => true);
+    setShadowColor(() => "");
+    setViewElement(() => "image");
+    setOpened(() => false);
+  };
+
+  const getExtractorColor = async (image: string) => {
+    const color = await prominent(image, { amount: 1, format: "hex" });
+    return color;
+  };
+
+  useEffect(() => {
+    if (!opened) {
+      return cardClose();
+    }
+    if (opened) {
+      if (props.video_src) {
+        setTimeout(() => {
+          setViewElement(() => "video");
+        }, 2000);
+      }
+      if (props.withModal) {
+        getExtractorColor(props.image_src).then((color) =>
+          setShadowColor(() => color as string)
+        );
+      }
+    }
+  }, [opened, props.image_src, props.video_src, props.withModal]);
 
   const { openDropdown, closeDropdown } = useDelayedHover({
     open,
@@ -125,7 +148,10 @@ const Card: FC<CardProps> = (props) => {
       return <></>;
     }
     return (
-      <div className={clsx(s.description, opened ? s.show : s.hidden)}>
+      <div
+        className={clsx(s.description, opened ? s.show : s.hidden)}
+        style={{ boxShadow: !opened ? `` : `0 15px 20px 5px ${shadowColor}` }}
+      >
         <h2 className={s.title}>{props.title}</h2>
         <span className={s.tags}>{tags}</span>
         <div className={s.buttons}>
@@ -155,14 +181,15 @@ const Card: FC<CardProps> = (props) => {
         if (props.withModal) {
           closeDropdown();
         }
-        setOpened(() => false);
-        setViewElement(() => "image");
-        setMuted(() => true);
+        cardClose();
       }}
       className={clsx(s.card, props.className, {
         [s.withModal]: props.withModal && opened,
       })}
-      style={props.style}
+      style={{
+        ...props.style,
+        boxShadow: !opened ? `` : `0 15px 20px 5px ${shadowColor}`,
+      }}
     >
       <div className={s.imageWrapper}>
         <IsNew />
