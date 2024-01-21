@@ -53,15 +53,31 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+
       .watchButton {
         height: 35px;
         padding: 0 24px !important;
         text-transform: uppercase;
       }
       .saveIcon {
+        width: 35px;
+        height: 35px;
         background-color: transparent;
+        display: flex;
+        width: 35px;
+        height: 35px;
+        padding: 10px;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        border-radius: 50%;
         border: none;
         cursor: pointer;
+        transition: all 0.3s;
+
+        &:hover {
+          background-color: #43454b;
+        }
       }
     }
   }
@@ -71,11 +87,20 @@
   visibility: visible;
 }
 .hidden {
-  width: 0;
-  height: 0;
+  transition: all 0.5s;
   opacity: 0;
+  width: 100%;
+  height: 0;
   visibility: hidden;
 }
+
+.mute{
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 50%;
+  border: 1px solid #fff;
+}
+
 
 @media (max-width: 603px) {
   .company {

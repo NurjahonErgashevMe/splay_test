@@ -34,6 +34,10 @@
   backdrop-filter: blur(2px);
 }
 
+.transparent {
+  background-color: transparent;
+}
+
 .top-right {
   position: absolute;
   top: 10px;
@@ -43,5 +47,11 @@
 .bottom-left {
   position: absolute;
   left: 10px;
+  bottom: 10px;
+}
+
+.bottom-right {
+  position: absolute;
+  right: 10px;
   bottom: 10px;
 }

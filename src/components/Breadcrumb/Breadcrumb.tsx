@@ -1,10 +1,10 @@
-import { FC, ReactNode } from "react";
+import { FC, HTMLProps, ReactNode } from "react";
 import s from "./breadcrumb.module.scss";
 import clsx from "clsx";
-interface BreadcrumbProps {
+interface BreadcrumbProps extends Partial<HTMLProps<HTMLDivElement>> {
   children: ReactNode;
   position: "top-left" | "top-right" | "bottom-left" | "bottom-right";
-  variant: "orange" | "blur";
+  variant: "orange" | "blur" | "transparent";
   borderRadius?: string;
   type: "image" | "text";
   className?: string;
@@ -17,6 +17,7 @@ const Breadcrumb: FC<BreadcrumbProps> = ({
   borderRadius = "20px",
   type,
   className,
+  ...props
 }) => {
   return (
     <div
@@ -28,6 +29,7 @@ const Breadcrumb: FC<BreadcrumbProps> = ({
         className
       )}
       style={{ borderRadius }}
+      {...props}
     >
       {children}
     </div>

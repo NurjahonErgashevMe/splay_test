@@ -29,8 +29,16 @@ interface CardProps extends MovieContent {
 const Card: FC<CardProps> = (props) => {
   const [opened, setOpened] = useState<boolean>(false);
   const [saved, setSaved] = useState<boolean>(false);
+  const [viewElement, setViewElement] = useState<"image" | "video">("image");
+  const [muted, setMuted] = useState<boolean>(true);
 
-  useEffect(() => {}, [opened]);
+  useEffect(() => {
+    if (props.video_src && opened) {
+      setTimeout(() => {
+        setViewElement(() => "video");
+      }, 1000);
+    }
+  }, [opened, props.video_src]);
 
   const open = (): void => {
     setOpened(() => true);
@@ -40,6 +48,9 @@ const Card: FC<CardProps> = (props) => {
   };
   const save = () => {
     setSaved((prev) => !prev);
+  };
+  const mute = () => {
+    setMuted((prev) => !prev);
   };
 
   const { openDropdown, closeDropdown } = useDelayedHover({
@@ -51,6 +62,8 @@ const Card: FC<CardProps> = (props) => {
 
   const CompanyLogo = getImage(props.company as ImageNames) ?? null;
   const IconSave = getIcon("SAVE") ?? <></>;
+
+  const IconVolumeOrMuted = getIcon(muted ? "MUTED" : "VOLUME") ?? <></>;
 
   const IS_COMPANY_LOGO_IMAGE: boolean = typeof CompanyLogo === "string";
 
@@ -107,6 +120,30 @@ const Card: FC<CardProps> = (props) => {
     );
   };
 
+  const WithModal: FC = () => {
+    if (!props.withModal) {
+      return <></>;
+    }
+    return (
+      <div className={clsx(s.description, opened ? s.show : s.hidden)}>
+        <h2 className={s.title}>{props.title}</h2>
+        <span className={s.tags}>{tags}</span>
+        <div className={s.buttons}>
+          <Button
+            variant="orangeColor"
+            icon={{ name: "PLAY--WHITE" }}
+            className={s.watchButton}
+          >
+            начать смотреть
+          </Button>
+          <button className={s.saveIcon} onClick={save}>
+            <IconSave stroke="#fff" fill={saved ? "#fff" : "transparent"} />
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div
       onPointerEnter={() => {
@@ -118,6 +155,9 @@ const Card: FC<CardProps> = (props) => {
         if (props.withModal) {
           closeDropdown();
         }
+        setOpened(() => false);
+        setViewElement(() => "image");
+        setMuted(() => true);
       }}
       className={clsx(s.card, props.className, {
         [s.withModal]: props.withModal && opened,
@@ -126,37 +166,43 @@ const Card: FC<CardProps> = (props) => {
     >
       <div className={s.imageWrapper}>
         <IsNew />
-        <LazyLoadImage
-          className={s.image}
-          src={props.image_src}
-          placeholderSrc={props.image_src}
-          width={"100%"}
-          height={"auto"}
-          effect="blur"
-          alt={props.title}
-          loading="lazy"
-          sizes="100vw"
-        />
+        {viewElement === "image" ? (
+          <LazyLoadImage
+            className={s.image}
+            src={props.image_src}
+            placeholderSrc={props.image_src}
+            width={"100%"}
+            height={"auto"}
+            effect="blur"
+            alt={props.title}
+            loading="lazy"
+            sizes="100vw"
+          />
+        ) : (
+          <video
+            width={"100%"}
+            height={"auto"}
+            src={props.video_src ?? ""}
+            playsInline
+            autoPlay
+            loop
+            muted={muted}
+          ></video>
+        )}
+        {viewElement === "video" ? (
+          <Breadcrumb
+            type="image"
+            position="bottom-right"
+            variant="transparent"
+            onClick={mute}
+            className={s.mute}
+          >
+            <IconVolumeOrMuted />
+          </Breadcrumb>
+        ) : null}
         <IsCompany />
       </div>
-      {props.withModal ? (
-        <div className={clsx(s.description, opened ? s.show : s.hidden)}>
-          <h2 className={s.title}>{props.title}</h2>
-          <span className={s.tags}>{tags}</span>
-          <div className={s.buttons}>
-            <Button
-              variant="orangeColor"
-              icon={{ name: "PLAY--WHITE" }}
-              className={s.watchButton}
-            >
-              начать смотреть
-            </Button>
-            <button className={s.saveIcon} onClick={save}>
-              <IconSave stroke="#fff" fill={saved ? "#fff" : "transparent"} />
-            </button>
-          </div>
-        </div>
-      ) : null}
+      <WithModal />
     </div>
   );
 };
