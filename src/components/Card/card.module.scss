@@ -1,0 +1,94 @@
+.card {
+  cursor: pointer;
+  width: 100%;
+  transition: 0.2s;
+  max-width: 600px;
+  max-height: 600px;
+  .imageWrapper {
+    position: relative;
+    height: auto;
+    .image {
+      height: 100%;
+      z-index: 1;
+      border-radius: 20px;
+      @media (max-width: 603px) {
+        border-radius: 10px;
+      }
+    }
+  }
+}
+
+.withModal {
+  z-index: 10;
+  scale: 1.2;
+  background-color: #1c1f2c;
+  .image {
+    border-radius: 20px 20px 0 0 !important;
+  }
+  .description {
+    transition: all 0.3s;
+    width: 100%;
+    padding: 20px 20px 25px 20px;
+    background: #1c1f2c;
+    color: #fff;
+    border-radius: 0 0 20px 20px;
+    position: absolute;
+    .title {
+      color: #fff;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+      margin-bottom: 10px;
+    }
+    .tags {
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      color: #8a8b8f;
+    }
+    .buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .watchButton {
+        height: 35px;
+        padding: 0 24px !important;
+        text-transform: uppercase;
+      }
+      .saveIcon {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+      }
+    }
+  }
+}
+.show {
+  opacity: 1;
+  visibility: visible;
+}
+.hidden {
+  width: 0;
+  height: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+@media (max-width: 603px) {
+  .company {
+    width: 40px !important;
+    height: 20px;
+    left: 3px !important;
+    img {
+      width: 100%;
+      height: 50%;
+    }
+  }
+  .isNew {
+    left: 3px !important;
+    font-size: 8px !important;
+  }
+}

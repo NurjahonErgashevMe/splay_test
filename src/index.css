@@ -1,0 +1,44 @@
+@font-face {
+  font-family: "SF Pro Display";
+  src: url("./fonts/SFPRODISPLAYBOLD.OTF");
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url("./fonts/SFPRODISPLAYMEDIUM.OTF");
+  font-weight: 400;
+  font-style: normal;
+}
+
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none;
+  font-family: "SF Pro Display";
+}
+
+:root {
+  --orange-color: #ff4b00;
+  --black-color: #171a24;
+  --white-color: #ffffff;
+  --grayish-black-color: #232738;
+  --blacker-black-color: #0c0d12;
+}
+
+body {
+  background-color: var(--blacker-black-color);
+}
+
+.container {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+@media (max-width: 500px) {
+  .container {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}

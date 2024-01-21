@@ -1,0 +1,47 @@
+.breadcrumb {
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 100%; /* 12px */
+  text-transform: uppercase;
+  padding: 5px 8px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-items: center;
+}
+.image {
+  width: 70px;
+  color: white;
+}
+
+.text {
+  max-width: 100px;
+}
+
+.orange {
+  background-color: var(--orange-color);
+  color: var(--white-color);
+}
+.blur {
+  background: linear-gradient(
+    207deg,
+    rgba(255, 255, 255, 0.4) -0.55%,
+    rgba(255, 255, 255, 0.19) 100%
+  );
+
+  backdrop-filter: blur(2px);
+}
+
+.top-right {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.bottom-left {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+}

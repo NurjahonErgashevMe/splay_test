@@ -1,0 +1,36 @@
+.button {
+  display: flex;
+  height: 60px;
+  padding: 18px 32px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 100px;
+  border: none;
+  &:hover {
+    cursor: pointer;
+  }
+  transition: all .2s;
+}
+
+.orangeColor {
+  background-color: var(--orange-color);
+  color: var(--white-color);
+}
+
+.whiteColor {
+  background-color: var(--white-color);
+  color: var(--black-color);
+}
+.white--orange-onHover{
+  background-color: var(--white-color);
+  .icon{
+    stroke: var(--black-color);
+  }
+  &:hover{
+    background-color: var(--orange-color);
+    .icon{
+      stroke: var(--white-color);
+    }
+  }
+}
