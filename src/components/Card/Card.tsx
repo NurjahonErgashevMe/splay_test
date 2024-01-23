@@ -1,19 +1,25 @@
 import { CSSProperties, FC, useEffect, useState } from "react";
-import s from "./card.module.scss";
 import { MovieContent } from "@/types/movies";
-import Breadcrumb from "../Breadcrumb/Breadcrumb";
+import { ImageNames } from "@/types/shared/imagesNames";
 
+import Breadcrumb from "../Breadcrumb/Breadcrumb";
+import Button from "../Button/Button";
+
+import { useDelayedHover } from "@/shared/hooks/useDelayHover";
+
+import { prominent } from "color.js";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
+import s from "./card.module.scss";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import "react-lazy-load-image-component/src/effects/opacity.css";
-import getImage from "@/helpers/getImage";
-import { ImageNames } from "@/types/shared/imagesNames";
+
 import clsx from "clsx";
-import { useDelayedHover } from "@/shared/hooks/useDelayHover";
-import Button from "../Button/Button";
+
+import getImage from "@/helpers/getImage";
 import getIcon from "@/helpers/getIcon";
-import { prominent } from "color.js";
+import { Transition } from "../Transition";
+
 interface CardProps extends MovieContent {
   image_src: string;
   video_src: string | null;
@@ -33,6 +39,7 @@ const Card: FC<CardProps> = (props) => {
   const [viewElement, setViewElement] = useState<"image" | "video">("image");
   const [muted, setMuted] = useState<boolean>(true);
   const [shadowColor, setShadowColor] = useState<string>("");
+
   const open = (): void => {
     setOpened(() => true);
   };
@@ -46,11 +53,11 @@ const Card: FC<CardProps> = (props) => {
     setMuted((prev) => !prev);
   };
 
-  const cardClose = () => {
-    setMuted(() => true);
-    setShadowColor(() => "");
+  const viewElementOpen = (): void => {
+    setViewElement(() => "video");
+  };
+  const viewElementCLose = () => {
     setViewElement(() => "image");
-    setOpened(() => false);
   };
 
   const getExtractorColor = async (image: string) => {
@@ -58,30 +65,48 @@ const Card: FC<CardProps> = (props) => {
     return color;
   };
 
+  const {
+    openDropdown: viewElementChangerOpen,
+    closeDropdown: viewElementChangerCLose,
+  } = useDelayedHover({
+    open: viewElementOpen,
+    close: viewElementCLose,
+    openDelay: 3000,
+    closeDelay: 0,
+  });
+
+  const { openDropdown, closeDropdown } = useDelayedHover({
+    open,
+    close,
+    openDelay: 1000,
+    closeDelay: 0,
+  });
+
   useEffect(() => {
-    if (!opened) {
-      return cardClose();
-    }
-    if (opened) {
+    const func = () => {
+      if (!opened) {
+        viewElementChangerCLose();
+        return;
+      }
       if (props.video_src) {
-        setTimeout(() => {
-          setViewElement(() => "video");
-        }, 2000);
+        viewElementChangerOpen();
       }
       if (props.withModal) {
         getExtractorColor(props.image_src).then((color) =>
           setShadowColor(() => color as string)
         );
       }
-    }
-  }, [opened, props.image_src, props.video_src, props.withModal]);
-
-  const { openDropdown, closeDropdown } = useDelayedHover({
-    open,
-    close,
-    openDelay: 1000,
-    closeDelay: 100,
-  });
+    };
+    func();
+  }, [
+    opened,
+    props.image_src,
+    props.video_src,
+    props.withModal,
+    viewElement,
+    viewElementChangerCLose,
+    viewElementChangerOpen,
+  ]);
 
   const CompanyLogo = getImage(props.company as ImageNames) ?? null;
   const IconSave = getIcon("SAVE") ?? <></>;
@@ -143,14 +168,17 @@ const Card: FC<CardProps> = (props) => {
     );
   };
 
-  const WithModal: FC = () => {
+  const WithModal: FC<CSSProperties> = (styles) => {
     if (!props.withModal) {
       return <></>;
     }
     return (
       <div
-        className={clsx(s.description, opened ? s.show : s.hidden)}
-        style={{ boxShadow: !opened ? `` : `0 15px 20px 5px ${shadowColor}` }}
+        className={s.description}
+        style={{
+          boxShadow: !opened ? `` : `0 15px 20px 5px ${shadowColor}`,
+          ...styles,
+        }}
       >
         <h2 className={s.title}>{props.title}</h2>
         <span className={s.tags}>{tags}</span>
@@ -181,7 +209,7 @@ const Card: FC<CardProps> = (props) => {
         if (props.withModal) {
           closeDropdown();
         }
-        cardClose();
+        setOpened(() => false);
       }}
       className={clsx(s.card, props.className, {
         [s.withModal]: props.withModal && opened,
@@ -206,30 +234,38 @@ const Card: FC<CardProps> = (props) => {
             sizes="100vw"
           />
         ) : (
-          <video
-            width={"100%"}
-            height={"auto"}
-            src={props.video_src ?? ""}
-            playsInline
-            autoPlay
-            loop
-            muted={muted}
-          ></video>
+          <>
+            <video
+              width={"100%"}
+              height={"auto"}
+              src={props.video_src ?? ""}
+              playsInline
+              autoPlay
+              loop
+              muted={muted}
+            ></video>
+            <Breadcrumb
+              type="image"
+              position="bottom-right"
+              variant="transparent"
+              onClick={mute}
+              className={s.mute}
+            >
+              <IconVolumeOrMuted />
+            </Breadcrumb>
+          </>
         )}
-        {viewElement === "video" ? (
-          <Breadcrumb
-            type="image"
-            position="bottom-right"
-            variant="transparent"
-            onClick={mute}
-            className={s.mute}
-          >
-            <IconVolumeOrMuted />
-          </Breadcrumb>
-        ) : null}
         <IsCompany />
       </div>
-      <WithModal />
+      <Transition
+        mounted={opened}
+        transition="fade"
+        duration={300}
+        exitDuration={20}
+        timingFunction="ease"
+      >
+        {(styles) => <WithModal {...styles} />}
+      </Transition>
     </div>
   );
 };

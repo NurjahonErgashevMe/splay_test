@@ -4,12 +4,12 @@ import CardsWrapper from "./components/CardsWrapper/CardsWrapper";
 import { Suspense } from "react";
 import Card from "./components/Card/Card";
 
-const video_src : string = `https://d3v55qvjb2v012.cloudfront.net/Ae7e/2024/01/19/14/22/cZVq23VJZz4/sc.mp4?srcid=cZVq23VJZz4&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9kM3Y1NXF2amIydjAxMi5jbG91ZGZyb250Lm5ldC9BZTdlLzIwMjQvMDEvMTkvMTQvMjIvY1pWcTIzVkpaejQvc2MubXA0P3NyY2lkPWNaVnEyM1ZKWno0IiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzA1OTU4NTE4fX19XX0_&Signature=RjXqNhSaE793Wb2voyIN3u5qgNWXZiAK-WJidNjK-pQTVWJjoySxzxz9RkRWWrn3cH444B2rfLaPHoY8B~MK~3BF~TgDTYpzsDI8B~o~3tee0J~qb0IEBsBz10YUsc9q6TDdHQGhQH~QuwAzHDNIjdSqb89O~AMmY05TEhWKA8A_&Key-Pair-Id=APKAI4E2RN57D46ONMEQ`;
+const video_src: string = `https://gemootest.s3.us-east-2.amazonaws.com/s/res/598911471630778368/fe87e6f75f8488891cb76e2560a77bad.mp4?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIARLZICB6QQHKRCV7K%2F20240123%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20240123T045021Z&X-Amz-SignedHeaders=host&X-Amz-Expires=7200&X-Amz-Signature=cf51a6e5bea96dab14e9cca33bed2f57c9ad72a11152e6e3c26a86406302be95`;
 
 const cardItem_1 = movies[0].contents[3];
 const cardItem_2 = movies[0].contents[5];
 
-const LOREM_TEXT : string = `
+const LOREM_TEXT: string = `
 Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo amet nemo voluptatibus vel id consequatur! Cum corporis, nam temporibus modi perferendis laborum illo sit quae expedita qui reiciendis consequuntur numquam pariatur, officiis tenetur veritatis, itaque ipsa similique! Ducimus repellat delectus quis a voluptate tempora odit modi, at, provident dolorum facilis?`;
 
 function App() {
