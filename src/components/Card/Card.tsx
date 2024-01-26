@@ -1,14 +1,19 @@
-import { CSSProperties, FC, useEffect, useState } from "react";
+import { CSSProperties, FC, useCallback, useEffect, useState } from "react";
 import { MovieContent } from "@/types/movies";
 import { ImageNames } from "@/types/shared/imagesNames";
 
+import { Transition } from "../Transition";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import Button from "../Button/Button";
+import Modal from "../CardModal/CardModal";
 
 import { useDelayedHover } from "@/shared/hooks/useDelayHover";
 
-import { prominent } from "color.js";
+// import { prominent } from "color.js";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+
+import { Rect, useRect } from "react-use-rect";
+import getBreakpoint from "@/helpers/getBreakpoint";''
 
 import s from "./card.module.scss";
 import "react-lazy-load-image-component/src/effects/blur.css";
@@ -18,9 +23,13 @@ import clsx from "clsx";
 
 import getImage from "@/helpers/getImage";
 import getIcon from "@/helpers/getIcon";
-import { Transition } from "../Transition";
+import NiceModal from "@ebay/nice-modal-react";
 
-interface CardProps extends MovieContent {
+import { useWindowScroll } from "@/shared/hooks/useWindowScroll";
+import breakpoints from "@/shared/breakpoints";
+import { useViewportSize } from "@/shared/hooks/useWindowSize";
+
+export interface CardProps extends MovieContent {
   image_src: string;
   video_src: string | null;
   country: string[];
@@ -34,11 +43,16 @@ interface CardProps extends MovieContent {
 }
 
 const Card: FC<CardProps> = (props) => {
+  const { width: viewportWidth } = useViewportSize();
   const [opened, setOpened] = useState<boolean>(false);
   const [saved, setSaved] = useState<boolean>(false);
   const [viewElement, setViewElement] = useState<"image" | "video">("image");
   const [muted, setMuted] = useState<boolean>(true);
-  const [shadowColor, setShadowColor] = useState<string>("");
+  const [rect, setRect] = useState<Rect | null>(null);
+  const [rectRef, revalidate] = useRect(setRect);
+  const [scroll] = useWindowScroll();
+
+  NiceModal.register("card-modal", Modal);
 
   const open = (): void => {
     setOpened(() => true);
@@ -60,11 +74,6 @@ const Card: FC<CardProps> = (props) => {
     setViewElement(() => "image");
   };
 
-  const getExtractorColor = async (image: string) => {
-    const color = await prominent(image, { amount: 1, format: "hex" });
-    return color;
-  };
-
   const {
     openDropdown: viewElementChangerOpen,
     closeDropdown: viewElementChangerCLose,
@@ -82,6 +91,35 @@ const Card: FC<CardProps> = (props) => {
     closeDelay: 0,
   });
 
+  const Description: FC<CSSProperties> = (styles) => {
+    if (!props.withModal) {
+      return <></>;
+    }
+    return (
+      <div
+        className={s.description}
+        style={{
+          ...styles,
+        }}
+      >
+        <h2 className={s.title}>{props.title}</h2>
+        <span className={s.tags}>{tags}</span>
+        <div className={s.buttons}>
+          <Button
+            variant="orangeColor"
+            icon={{ name: "PLAY--WHITE" }}
+            className={s.watchButton}
+          >
+            начать смотреть
+          </Button>
+          <button className={s.saveIcon} onClick={save}>
+            <IconSave stroke="#fff" fill={saved ? "#fff" : "transparent"} />
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   useEffect(() => {
     const func = () => {
       if (!opened) {
@@ -91,13 +129,8 @@ const Card: FC<CardProps> = (props) => {
       if (props.video_src) {
         viewElementChangerOpen();
       }
-      if (props.withModal) {
-        getExtractorColor(props.image_src).then((color) =>
-          setShadowColor(() => color as string)
-        );
-      }
     };
-    func();
+    return () => func();
   }, [
     opened,
     props.image_src,
@@ -107,6 +140,11 @@ const Card: FC<CardProps> = (props) => {
     viewElementChangerCLose,
     viewElementChangerOpen,
   ]);
+
+  useEffect(() => {
+    setOpened(() => false);
+    return () => NiceModal.remove("card-modal");
+  }, [scroll]);
 
   const CompanyLogo = getImage(props.company as ImageNames) ?? null;
   const IconSave = getIcon("SAVE") ?? <></>;
@@ -168,104 +206,133 @@ const Card: FC<CardProps> = (props) => {
     );
   };
 
-  const WithModal: FC<CSSProperties> = (styles) => {
-    if (!props.withModal) {
-      return <></>;
-    }
-    return (
-      <div
-        className={s.description}
-        style={{
-          boxShadow: !opened ? `` : `0 15px 20px 5px ${shadowColor}`,
-          ...styles,
-        }}
-      >
-        <h2 className={s.title}>{props.title}</h2>
-        <span className={s.tags}>{tags}</span>
-        <div className={s.buttons}>
-          <Button
-            variant="orangeColor"
-            icon={{ name: "PLAY--WHITE" }}
-            className={s.watchButton}
-          >
-            начать смотреть
-          </Button>
-          <button className={s.saveIcon} onClick={save}>
-            <IconSave stroke="#fff" fill={saved ? "#fff" : "transparent"} />
-          </button>
+  const showModal = useCallback(() => {
+    if (!opened || !rect || !props.withModal) {
+      return;
+    } else if (getBreakpoint(breakpoints, viewportWidth) === breakpoints.xs)
+      return;
+
+    NiceModal.show("card-modal", {
+      children: (
+        <div
+          className={clsx(s.card, props.className, {
+            [s.withModal]: props.withModal,
+          })}
+          style={{
+            ...props.style,
+          }}
+          onPointerLeave={() => NiceModal.hide("card-modal")}
+        >
+          <div className={s.imageWrapper}>
+            {viewElement === "image" ? (
+              <LazyLoadImage
+                className={s.image}
+                src={props.image_src}
+                placeholderSrc={props.image_src}
+                width={"100%"}
+                height={"auto"}
+                effect="blur"
+                alt={props.title}
+                loading="lazy"
+                sizes="100vw"
+              />
+            ) : (
+              <>
+                <video
+                  width={"100%"}
+                  height={"auto"}
+                  src={props.video_src ?? ""}
+                  playsInline
+                  autoPlay
+                  loop
+                  muted={muted}
+                ></video>
+                <Breadcrumb
+                  type="image"
+                  position="bottom-right"
+                  variant="transparent"
+                  onClick={mute}
+                  className={s.mute}
+                >
+                  <IconVolumeOrMuted />
+                </Breadcrumb>
+              </>
+            )}
+            <Transition
+              mounted={opened}
+              keepMounted
+              duration={500}
+              exitDuration={200}
+              transition={"fade"}
+            >
+              {(styles) => <Description {...styles} />}
+            </Transition>
+          </div>
         </div>
-      </div>
-    );
-  };
+      ),
+      rect,
+    });
+  }, [opened, rect, viewportWidth]);
+
+  showModal();
 
   return (
     <div
-      onPointerEnter={() => {
-        if (props.withModal) {
-          openDropdown();
-        }
-      }}
+      className={s.cardWrapper}
       onPointerLeave={() => {
         if (props.withModal) {
           closeDropdown();
         }
         setOpened(() => false);
       }}
-      className={clsx(s.card, props.className, {
-        [s.withModal]: props.withModal && opened,
-      })}
-      style={{
-        ...props.style,
-        boxShadow: !opened ? `` : `0 15px 20px 5px ${shadowColor}`,
+      onPointerEnter={() => {
+        if (props.withModal) {
+          openDropdown();
+        }
+        revalidate();
       }}
+      ref={rectRef}
     >
-      <div className={s.imageWrapper}>
-        <IsNew />
-        {viewElement === "image" ? (
-          <LazyLoadImage
-            className={s.image}
-            src={props.image_src}
-            placeholderSrc={props.image_src}
-            width={"100%"}
-            height={"auto"}
-            effect="blur"
-            alt={props.title}
-            loading="lazy"
-            sizes="100vw"
-          />
-        ) : (
-          <>
-            <video
+      <div className={clsx(s.card, props.className)}>
+        <div className={s.imageWrapper}>
+          <IsNew />
+          {viewElement === "image" ? (
+            <LazyLoadImage
+              className={s.image}
+              src={props.image_src}
+              placeholderSrc={props.image_src}
               width={"100%"}
               height={"auto"}
-              src={props.video_src ?? ""}
-              playsInline
-              autoPlay
-              loop
-              muted={muted}
-            ></video>
-            <Breadcrumb
-              type="image"
-              position="bottom-right"
-              variant="transparent"
-              onClick={mute}
-              className={s.mute}
-            >
-              <IconVolumeOrMuted />
-            </Breadcrumb>
-          </>
-        )}
-        <IsCompany />
+              effect="blur"
+              alt={props.title}
+              loading="lazy"
+              sizes="100vw"
+            />
+          ) : (
+            <>
+              <video
+                width={"100%"}
+                height={"auto"}
+                src={props.video_src ?? ""}
+                playsInline
+                autoPlay
+                loop
+                muted={muted}
+              ></video>
+              <Breadcrumb
+                type="image"
+                position="bottom-right"
+                variant="transparent"
+                onClick={mute}
+                className={s.mute}
+              >
+                <IconVolumeOrMuted />
+              </Breadcrumb>
+            </>
+          )}
+          <IsCompany />
+        </div>
       </div>
-      <Transition
-        mounted={opened}
-        transition="fade"
-        duration={300}
-        exitDuration={20}
-        timingFunction="ease"
-      >
-        {(styles) => <WithModal {...styles} />}
-      </Transition>
     </div>
   );
 };

@@ -1,0 +1,20 @@
+.modal {
+  position: fixed;
+  transition: ease 0.3s;
+  scroll-behavior: smooth;
+  animation: modalFadeIn 0.5s ease;
+  transform: translateY(-20px);
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(0);
+    scale: 0.6;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+    transform: translateY(-10%);
+  }
+}

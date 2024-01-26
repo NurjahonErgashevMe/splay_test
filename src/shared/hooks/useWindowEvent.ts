@@ -11,6 +11,6 @@ export function useWindowEvent<K extends string>(
   useEffect(() => {
     window.addEventListener(type as any, listener, options);
     return () => window.removeEventListener(type as any, listener, options);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, listener]);
 }

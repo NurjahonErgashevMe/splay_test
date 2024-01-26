@@ -1,4 +1,4 @@
-import { MantineTransition, transitions } from "./transitions";
+import { Transitions, transitions } from "./transitions";
 
 const transitionStatuses = {
   entering: "in",
@@ -15,7 +15,7 @@ export function getTransitionStyles({
   duration,
   timingFunction,
 }: {
-  transition: MantineTransition;
+  transition: Transitions;
   state: keyof typeof transitionStatuses;
   duration: number;
   timingFunction: React.CSSProperties["transitionTimingFunction"];

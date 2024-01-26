@@ -41,7 +41,7 @@ export interface TransitionProps {
 export type TransitionOverride = Partial<Omit<TransitionProps, "mounted">>;
 
 export function Transition({
-  keepMounted,
+  keepMounted = false,
   transition = "fade",
   duration = 250,
   exitDuration = duration,
@@ -67,7 +67,7 @@ export function Transition({
 
   if (transitionDuration === 0) {
     return mounted ? (
-      <>{children({})}</>
+      <>{children({ visibility: "hidden" })}</>
     ) : keepMounted ? (
       children({ display: "none" })
     ) : null;

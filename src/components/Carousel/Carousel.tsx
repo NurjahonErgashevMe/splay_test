@@ -11,6 +11,7 @@ import Card from "../Card/Card";
 import Button from "../Button/Button";
 import clsx from "clsx";
 import { useViewportSize } from "@/shared/hooks/useWindowSize";
+import breakpoints from "@/shared/breakpoints";
 
 type ResponsiveOption = {
   breakpoint: number;
@@ -67,21 +68,21 @@ Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet distinctio, aperia
 
 const CAROUSEL_OPTIONS: ResponsiveOption[] = [
   {
-    breakpoint: 1540,
+    breakpoint: breakpoints.xl,
     settings: {
       slidesToShow: 5,
       slidesToScroll: 5,
     },
   },
   {
-    breakpoint: 1124,
+    breakpoint: breakpoints.md,
     settings: {
       slidesToShow: 3,
       slidesToScroll: 3,
     },
   },
   {
-    breakpoint: 600,
+    breakpoint: breakpoints.sm,
     settings: {
       slidesToShow: 2,
       slidesToScroll: 2,
@@ -89,41 +90,48 @@ const CAROUSEL_OPTIONS: ResponsiveOption[] = [
   },
 ];
 
+const getCurrentResponsiveOption = (
+  width: number,
+  BigestOption: ResponsiveOption,
+  SmallestOption: ResponsiveOption
+): ResponsiveOption => {
+  if (width > BigestOption.breakpoint) {
+    return {
+      breakpoint: 0,
+      settings: { slidesToShow: 6, slidesToScroll: 6 },
+    };
+  } else if (width <= SmallestOption.breakpoint) {
+    return SmallestOption;
+  }
+  return CAROUSEL_OPTIONS?.find(
+    (item, index, array) =>
+      item.breakpoint >= width && array[index + 1]?.breakpoint <= width
+  ) as ResponsiveOption;
+};
+
 const Carousel: FC<CarouselProps> = ({ data }) => {
   const { width } = useViewportSize();
   const BigestOption = CAROUSEL_OPTIONS[0];
-  const SmallesOption = CAROUSEL_OPTIONS[CAROUSEL_OPTIONS.length - 1];
-
-  const getCurrentResponsiveOption = (): ResponsiveOption => {
-    if (width > BigestOption.breakpoint) {
-      return {
-        breakpoint: 0,
-        settings: { slidesToShow: 6, slidesToScroll: 6 },
-      };
-    } else if (width <= SmallesOption.breakpoint) {
-      return SmallesOption;
-    }
-    return CAROUSEL_OPTIONS?.find(
-      (item, index, array) =>
-        item.breakpoint >= width && array[index + 1]?.breakpoint <= width
-    ) as ResponsiveOption;
-  };
+  const SmallestOption = CAROUSEL_OPTIONS[CAROUSEL_OPTIONS.length - 1];
 
   return (
-    <div className={clsx(s.carousel, "carousel")}>
+    <div className={s.carousel}>
       <Slider
-        className={s.carouselContainer}
         slidesToScroll={6}
         slidesToShow={6}
         speed={500}
         infinite={false}
         nextArrow={
           <NextButton
-            slidesPerView={getCurrentResponsiveOption().settings.slidesToShow}
+            slidesPerView={
+              getCurrentResponsiveOption(width, BigestOption, SmallestOption)
+                .settings.slidesToShow
+            }
           />
         }
         prevArrow={<PrevButton />}
         responsive={CAROUSEL_OPTIONS}
+        className={s.slider}
       >
         {data?.map((item) => (
           <Card
@@ -138,6 +146,7 @@ const Carousel: FC<CarouselProps> = ({ data }) => {
             video_src={null}
             year={2023}
             className={s.carouselItem}
+            withModal
           />
         ))}
       </Slider>

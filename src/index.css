@@ -26,6 +26,11 @@
   --white-color: #ffffff;
   --grayish-black-color: #232738;
   --blacker-black-color: #0c0d12;
+  --breakpoint-xs: 576px;
+  --breakpoint-sm: 768px;
+  --breakpoint-md: 992px;
+  --breakpoint-lg: 1200px;
+  --breakpoint-xl: 1408px;
 }
 
 body {
@@ -36,7 +41,7 @@ body {
   margin-left: 20px;
   margin-right: 20px;
 }
-@media (max-width: 500px) {
+@media screen and (max-width: 576px) {
   .container {
     margin-left: 0;
     margin-right: 0;

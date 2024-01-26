@@ -1,17 +1,24 @@
-.card {
+@use "/src/breakpoints.scss" as breakpoints;
+
+.cardWrapper {
   cursor: pointer;
-  width: 100%;
-  transition: 0.2s;
+  width: auto;
+  transition: ease 0.3s;
+  min-width: 100px;
   max-width: 600px;
   max-height: 600px;
+}
+
+.card {
+  width: auto;
   .imageWrapper {
     position: relative;
     height: auto;
     .image {
       height: 100%;
-      z-index: 1;
       border-radius: 20px;
-      @media (max-width: 603px) {
+      z-index: 1;
+      @media screen and (max-width: breakpoints.$sm) {
         border-radius: 10px;
       }
     }
@@ -19,80 +26,80 @@
 }
 
 .withModal {
-  z-index: 10;
-  scale: 1.2;
-  background-color: #1c1f2c;
-  transition: ease 0.3s;
-  .image {
-    border-radius: 20px 20px 0 0 !important;
+  border-radius: 20px 20px 0 0;
+  .imageWrapper {
+    .image {
+      z-index: 10;
+      border-radius: 20px 20px 0 0 !important;
+    }
   }
-  .description {
-    position: absolute;
-    transition: ease 0.3s;
-    width: 100%;
-    padding: 20px 20px 25px 20px;
-    border-radius: 0 0 20px 20px;
-    background: #1c1f2c;
+}
+.description {
+  transition: ease 0.3s;
+  width: 100%;
+  padding: 20px 20px 25px 20px;
+  border-radius: 0 0 20px 20px;
+  background: #1c1f2c;
+  color: #fff;
+  text-align: left;
+  z-index: 20;
+  .title {
     color: #fff;
-    .title {
-      color: #fff;
-      font-size: 16px;
-      font-style: normal;
-      font-weight: 600;
-      line-height: normal;
-      margin-bottom: 10px;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-bottom: 10px;
+  }
+  .tags {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: #8a8b8f;
+  }
+  .buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .watchButton {
+      height: 35px;
+      padding: 0 24px !important;
+      text-transform: uppercase;
     }
-    .tags {
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: normal;
-      color: #8a8b8f;
-    }
-    .buttons {
-      margin-top: 20px;
+    .saveIcon {
+      width: 35px;
+      height: 35px;
+      background-color: transparent;
       display: flex;
-      justify-content: space-between;
+      width: 35px;
+      height: 35px;
+      padding: 10px;
+      justify-content: center;
       align-items: center;
+      gap: 10px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
 
-      .watchButton {
-        height: 35px;
-        padding: 0 24px !important;
-        text-transform: uppercase;
-      }
-      .saveIcon {
-        width: 35px;
-        height: 35px;
-        background-color: transparent;
-        display: flex;
-        width: 35px;
-        height: 35px;
-        padding: 10px;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-        border-radius: 50%;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s;
-
-        &:hover {
-          background-color: #43454b;
-        }
+      &:hover {
+        background-color: #43454b;
       }
     }
   }
 }
 
-.mute{
+.mute {
   width: 30px !important;
   height: 30px !important;
   border-radius: 50%;
   border: 1px solid #fff;
 }
 
-
-@media (max-width: 603px) {
+@media (max-width: breakpoints.$sm) {
   .company {
     width: 40px !important;
     height: 20px;
