@@ -13,7 +13,8 @@ import { useDelayedHover } from "@/shared/hooks/useDelayHover";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import { Rect, useRect } from "react-use-rect";
-import getBreakpoint from "@/helpers/getBreakpoint";''
+import getBreakpoint from "@/helpers/getBreakpoint";
+("");
 
 import s from "./card.module.scss";
 import "react-lazy-load-image-component/src/effects/blur.css";
@@ -128,9 +129,10 @@ const Card: FC<CardProps> = (props) => {
       }
       if (props.video_src) {
         viewElementChangerOpen();
+        console.log("viewelement : open");
       }
     };
-    return () => func();
+    func();
   }, [
     opened,
     props.image_src,
@@ -211,7 +213,6 @@ const Card: FC<CardProps> = (props) => {
       return;
     } else if (getBreakpoint(breakpoints, viewportWidth) === breakpoints.xs)
       return;
-
     NiceModal.show("card-modal", {
       children: (
         <div
@@ -221,7 +222,11 @@ const Card: FC<CardProps> = (props) => {
           style={{
             ...props.style,
           }}
-          onPointerLeave={() => NiceModal.hide("card-modal")}
+          onPointerLeave={() => {
+            NiceModal.hide("card-modal");
+            NiceModal.remove("card-modal");
+            setViewElement(() => "image");
+          }}
         >
           <div className={s.imageWrapper}>
             {viewElement === "image" ? (
@@ -258,6 +263,7 @@ const Card: FC<CardProps> = (props) => {
                 </Breadcrumb>
               </>
             )}
+          </div>
             <Transition
               mounted={opened}
               keepMounted
@@ -267,12 +273,12 @@ const Card: FC<CardProps> = (props) => {
             >
               {(styles) => <Description {...styles} />}
             </Transition>
-          </div>
         </div>
       ),
       rect,
+      image_src : props.image_src
     });
-  }, [opened, rect, viewportWidth , viewElement]);
+  }, [opened, rect, viewportWidth, viewElement, props.video_src]);
 
   showModal();
 
@@ -284,6 +290,7 @@ const Card: FC<CardProps> = (props) => {
           closeDropdown();
         }
         setOpened(() => false);
+        setViewElement(() => "image");
       }}
       onPointerEnter={() => {
         if (props.withModal) {
@@ -296,40 +303,17 @@ const Card: FC<CardProps> = (props) => {
       <div className={clsx(s.card, props.className)}>
         <div className={s.imageWrapper}>
           <IsNew />
-          {viewElement === "image" ? (
-            <LazyLoadImage
-              className={s.image}
-              src={props.image_src}
-              placeholderSrc={props.image_src}
-              width={"100%"}
-              height={"auto"}
-              effect="blur"
-              alt={props.title}
-              loading="lazy"
-              sizes="100vw"
-            />
-          ) : (
-            <>
-              <video
-                width={"100%"}
-                height={"auto"}
-                src={props.video_src ?? ""}
-                playsInline
-                autoPlay
-                loop
-                muted={muted}
-              ></video>
-              <Breadcrumb
-                type="image"
-                position="bottom-right"
-                variant="transparent"
-                onClick={mute}
-                className={s.mute}
-              >
-                <IconVolumeOrMuted />
-              </Breadcrumb>
-            </>
-          )}
+          <LazyLoadImage
+            className={s.image}
+            src={props.image_src}
+            placeholderSrc={props.image_src}
+            width={"100%"}
+            height={"auto"}
+            effect="blur"
+            alt={props.title}
+            loading="lazy"
+            sizes="100vw"
+          />
           <IsCompany />
         </div>
       </div>
