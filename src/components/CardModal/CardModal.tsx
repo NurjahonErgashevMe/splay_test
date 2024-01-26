@@ -17,7 +17,7 @@ const Modal: FC<ModalProps & NiceModalHocProps> = NiceModal.create(
       sm: 1.2,
       md: 1.3,
       lg: 1.5,
-      xl: 2,
+      xl: 1.6,
     };
 
     const description = {
@@ -30,6 +30,8 @@ const Modal: FC<ModalProps & NiceModalHocProps> = NiceModal.create(
     const height =
       (rect.height + description.height) * getBreakpoint(scale, viewportWidth);
     const bottom = rect.bottom + height - viewportHeight;
+
+    console.log(getBreakpoint(scale, viewportWidth));
 
     return (
       <div

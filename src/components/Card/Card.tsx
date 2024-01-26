@@ -272,7 +272,7 @@ const Card: FC<CardProps> = (props) => {
       ),
       rect,
     });
-  }, [opened, rect, viewportWidth]);
+  }, [opened, rect, viewportWidth , viewElement]);
 
   showModal();
 
