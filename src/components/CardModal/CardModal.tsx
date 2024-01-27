@@ -157,8 +157,8 @@ const ModalContent: FC<ModalContentProps> = ({
         viewElementChangerCLose();
       }}
     >
-      <canvas ref={outputRef}></canvas>
-      <button onClick={shoot}>go</button>
+      {/* <canvas ref={outputRef}></canvas> */}
+      {/* <button onClick={shoot}>go</button> */}
       <div className={sCard.imageWrapper}>
         {cardContext?.viewElement === "image" ? (
           <LazyLoadImage
@@ -177,7 +177,6 @@ const ModalContent: FC<ModalContentProps> = ({
             <video
               width={"100%"}
               height={"auto"}
-              src={video_src ?? ""}
               playsInline
               autoPlay
               loop
