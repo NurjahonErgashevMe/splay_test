@@ -1,5 +1,11 @@
 import NiceModal, { NiceModalHocProps, useModal } from "@ebay/nice-modal-react";
-import { CSSProperties, FC, ReactNode, useContext, useRef } from "react";
+import {
+  CSSProperties,
+  FC,
+  ReactNode,
+  useContext,
+  useRef,
+} from "react";
 import clsx from "clsx";
 
 import s from "./cardModal.module.scss";
@@ -41,9 +47,73 @@ const ModalContent: FC<ModalContentProps> = ({
   video_src,
   ...props
 }) => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  // const [snapshots, setSnapshots] = useState<HTMLCanvasElement[]>([]);
   const cardContext = useContext(CardContext);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const outputRef = useRef<HTMLCanvasElement | null>(null);
   const modal = useModal();
+
+  const scaleFactor = 0.25;
+
+  // function canvasToImage(canvas: HTMLCanvasElement): HTMLImageElement {
+  //   const img = new Image();
+
+  //   img.onload = () => {
+  //     canvas.getContext("2d")?.clearRect(0, 0, canvas.width, canvas.height);
+  //     canvas.getContext("2d")?.drawImage(img, 0, 0);
+  //     URL.revokeObjectURL(img.src);
+  //   };
+
+  //   const url = canvas.toDataURL("image/png");
+  //   img.src = url;
+
+  //   return img;
+  // }
+
+  const capture = (video: HTMLVideoElement) => {
+    const canvas = outputRef?.current;
+    if (!canvas) {
+      return;
+    }
+    const w = video.videoWidth * scaleFactor;
+    const h = video.videoHeight * scaleFactor;
+    canvas.width = w;
+    canvas.height = h;
+    canvas?.getContext("2d")?.drawImage(video, 0, 0, w, h);
+    return canvas;
+  };
+  const shoot = async () => {
+    const video = videoRef.current;
+    const output = outputRef.current;
+    if (video && output) {
+      const canvas = capture(video);
+      if (canvas) {
+        try {
+          const blob = await new Promise<Blob | null>((resolve) => {
+            canvas.toBlob((blob) => resolve(blob));
+          });
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.onload = () => {
+              URL.revokeObjectURL(url);
+            };
+            img.src = url;
+            output.appendChild(img);
+          }
+        } catch (error) {
+          console.error("Error converting canvas to blob:", error);
+        }
+      }
+    }
+  };
+
+  // if (cardContext?.viewElement === "video") {
+  //   setInterval(() => {
+  //   }, 1000);
+  //     shoot();
+  // }
 
   const mute = () => {
     cardContext?.setMuted((prev) => !prev);
@@ -87,6 +157,8 @@ const ModalContent: FC<ModalContentProps> = ({
         viewElementChangerCLose();
       }}
     >
+      <canvas ref={outputRef}></canvas>
+      <button onClick={shoot}>go</button>
       <div className={sCard.imageWrapper}>
         {cardContext?.viewElement === "image" ? (
           <LazyLoadImage
