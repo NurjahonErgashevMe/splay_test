@@ -1,19 +1,156 @@
-import NiceModal, { NiceModalHocProps } from "@ebay/nice-modal-react";
-import s from "./cardModal.module.scss";
-import { FC, ReactNode } from "react";
-import { Rect } from "react-use-rect";
-import { useViewportSize } from "@/shared/hooks/useWindowSize";
-import getBreakpoint from "@/helpers/getBreakpoint";
-import { useColor } from "color-thief-react";
+import NiceModal, { NiceModalHocProps, useModal } from "@ebay/nice-modal-react";
+import { CSSProperties, FC, ReactNode, useContext, useRef } from "react";
+import clsx from "clsx";
 
-interface ModalProps {
+import s from "./cardModal.module.scss";
+import sCard from "../Card/card.module.scss";
+
+import { Rect } from "react-use-rect";
+import { useColor } from "color-thief-react";
+import { CardContext } from "../Card/context/context";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import getIcon from "@/helpers/getIcon";
+import getBreakpoint from "@/helpers/getBreakpoint";
+import { Transition } from "../Transition";
+
+import Breadcrumb from "../Breadcrumb/Breadcrumb";
+import Description, { DescriptionProps } from "../Card/components/Description";
+import CardContextProvider from "../Card/context/ContextProvider";
+
+import { useDelayedHover } from "@/shared/hooks/useDelayHover";
+import { useViewportSize } from "@/shared/hooks/useWindowSize";
+interface ModalProps extends ModalContentProps {
   rect: Rect;
   children: ReactNode;
   image_src: string;
 }
 
+interface ModalContentProps extends DescriptionProps {
+  className: string;
+  style: CSSProperties;
+  image_src: string;
+  title: string;
+  video_src: string;
+}
+
+const ModalContent: FC<ModalContentProps> = ({
+  className,
+  style,
+  image_src,
+  title,
+  video_src,
+  ...props
+}) => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const cardContext = useContext(CardContext);
+  const modal = useModal();
+
+  const mute = () => {
+    cardContext?.setMuted((prev) => !prev);
+  };
+
+  const IconVolumeOrMuted = getIcon(
+    cardContext?.muted ? "MUTED" : "VOLUME"
+  ) ?? <></>;
+
+  const viewElementOpen = (): void => {
+    cardContext?.setViewElement("video");
+  };
+  const viewElementCLose = () => {
+    cardContext?.setViewElement(() => "image");
+  };
+
+  const {
+    openDropdown: viewElementChangerOpen,
+    closeDropdown: viewElementChangerCLose,
+  } = useDelayedHover({
+    open: viewElementOpen,
+    close: viewElementCLose,
+    openDelay: 3000,
+    closeDelay: 0,
+  });
+
+  if (cardContext?.viewElement === "image") {
+    viewElementChangerOpen();
+  }
+
+  return (
+    <div
+      className={clsx(sCard.card, className, sCard.withModal)}
+      style={{
+        ...style,
+      }}
+      onPointerLeave={() => {
+        modal.hide();
+        modal.remove();
+        cardContext?.setViewElement("image");
+        viewElementChangerCLose();
+      }}
+    >
+      <div className={sCard.imageWrapper}>
+        {cardContext?.viewElement === "image" ? (
+          <LazyLoadImage
+            className={sCard.image}
+            src={image_src}
+            placeholderSrc={image_src}
+            width={"100%"}
+            height={"auto"}
+            effect="blur"
+            alt={title}
+            loading="lazy"
+            sizes="100vw"
+          />
+        ) : (
+          <>
+            <video
+              width={"100%"}
+              height={"auto"}
+              src={video_src ?? ""}
+              playsInline
+              autoPlay
+              loop
+              muted={cardContext?.muted}
+              ref={videoRef}
+            >
+              <source src={video_src ?? ""} type="video/mp4"></source>
+            </video>
+            <Breadcrumb
+              type="image"
+              position="bottom-right"
+              variant="transparent"
+              onClick={mute}
+              className={sCard.mute}
+            >
+              <IconVolumeOrMuted />
+            </Breadcrumb>
+          </>
+        )}
+      </div>
+      <Transition
+        mounted={true}
+        keepMounted
+        duration={500}
+        exitDuration={200}
+        transition={"fade"}
+      >
+        {(styles) => (
+          <Description
+            title={title}
+            id={props.id}
+            withModal={props.withModal ?? false}
+            year={props.year}
+            styles={styles}
+            age_restrictions={props.age_restrictions}
+            country={props.country}
+          />
+        )}
+      </Transition>
+    </div>
+  );
+};
+
 const Modal: FC<ModalProps & NiceModalHocProps> = NiceModal.create(
-  ({ children, rect, image_src }) => {
+  ({ rect, image_src, ...props }) => {
     const { width: viewportWidth, height: viewportHeight } = useViewportSize();
     const {
       loading: boxColorloading,
@@ -21,7 +158,7 @@ const Modal: FC<ModalProps & NiceModalHocProps> = NiceModal.create(
       error,
     } = useColor(image_src, "rgbString", {
       crossOrigin: "anonymus",
-      quality: 50,
+      quality: 100,
     });
     const scale = {
       xs: 0,
@@ -81,13 +218,14 @@ const Modal: FC<ModalProps & NiceModalHocProps> = NiceModal.create(
           width,
           bottom: bottom > 0 ? `${bottom - height} !important` : bottom,
           ...xStyle,
-
           filter: `drop-shadow(${
             boxColorloading ? "var(--orange-color)" : boxColor
           } 0rem 0rem 1.875rem)`,
         }}
       >
-        {children}
+        <CardContextProvider>
+          <ModalContent {...props} image_src={image_src} />
+        </CardContextProvider>
       </div>
     );
   }
