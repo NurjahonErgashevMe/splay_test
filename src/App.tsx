@@ -29,7 +29,7 @@ function App() {
   const handleClear = () => {
     socket?.emit("clearNotification");
   };
-  
+
   return (
     <Suspense fallback={<h3>LOADING...</h3>}>
       <form onSubmit={handeSubmit}>
