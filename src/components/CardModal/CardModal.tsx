@@ -1,11 +1,5 @@
 import NiceModal, { NiceModalHocProps, useModal } from "@ebay/nice-modal-react";
-import {
-  CSSProperties,
-  FC,
-  ReactNode,
-  useContext,
-  useRef,
-} from "react";
+import { CSSProperties, FC, ReactNode, useContext, useRef } from "react";
 import clsx from "clsx";
 
 import s from "./cardModal.module.scss";
@@ -62,6 +56,7 @@ const ModalContent: FC<ModalContentProps> = ({
   //     canvas.getContext("2d")?.clearRect(0, 0, canvas.width, canvas.height);
   //     canvas.getContext("2d")?.drawImage(img, 0, 0);
   //     URL.revokeObjectURL(img.src);
+  //     img.crossOrigin = "anonymus";
   //   };
 
   //   const url = canvas.toDataURL("image/png");
@@ -87,25 +82,8 @@ const ModalContent: FC<ModalContentProps> = ({
   //   const output = outputRef.current;
   //   if (video && output) {
   //     const canvas = capture(video);
-  //     if (canvas) {
-  //       try {
-  //         const blob = await new Promise<Blob | null>((resolve) => {
-  //           canvas.toBlob((blob) => resolve(blob));
-  //         });
-  //         if (blob) {
-  //           const url = URL.createObjectURL(blob);
-  //           const img = new Image();
-  //           img.crossOrigin = "anonymous";
-  //           img.onload = () => {
-  //             URL.revokeObjectURL(url);
-  //           };
-  //           img.src = url;
-  //           output.appendChild(img);
-  //         }
-  //       } catch (error) {
-  //         console.error("Error converting canvas to blob:", error);
-  //       }
-  //     }
+  //     const canvasImageSrc = canvasToImage(output);
+  //     console.log(canvasImageSrc);
   //   }
   // };
 
@@ -157,8 +135,8 @@ const ModalContent: FC<ModalContentProps> = ({
         viewElementChangerCLose();
       }}
     >
-      {/* <canvas ref={outputRef}></canvas> */}
-      {/* <button onClick={shoot}>go</button> */}
+      {/* <canvas ref={outputRef}></canvas>
+      <button onClick={shoot}>go</button> */}
       <div className={sCard.imageWrapper}>
         {cardContext?.viewElement === "image" ? (
           <LazyLoadImage

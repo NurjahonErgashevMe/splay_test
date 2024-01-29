@@ -144,7 +144,7 @@ const Carousel: FC<CarouselProps> = ({ data }) => {
             is_saved={false}
             title={"The Lorem Man"}
             video_src={
-              "https://d3v55qvjb2v012.cloudfront.net/Ae7e/2024/01/19/14/22/cZVq23VJZz4/sc.mp4?srcid=cZVq23VJZz4&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9kM3Y1NXF2amIydjAxMi5jbG91ZGZyb250Lm5ldC9BZTdlLzIwMjQvMDEvMTkvMTQvMjIvY1pWcTIzVkpaejQvc2MubXA0P3NyY2lkPWNaVnEyM1ZKWno0IiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzA2MzU3NDQyfX19XX0_&Signature=WNIQNx8yC05mhINQ1SWFUBKq87O6RT~Ye1t4theI2FqzmftnhQtLivixgJlSqFNKvTh6vG1rLO3A55KZM3AOLb5yzza915KoKyOo~R9zmmiMPjBIGG~t2duQ3dDIgKaI4SPKtr-WrKkN2TzilDb5pzniOyozmUyHEv~s4RvqJPw_&Key-Pair-Id=APKAI4E2RN57D46ONMEQ"
+              "https://www.film.ru/sites/default/files/trailers/50248166/wednesday-season-2-teaser-1.mp4"
             }
             year={2023}
             className={s.carouselItem}
