@@ -1,7 +1,7 @@
 /// <reference types="vite-plugin-svgr/client" />
 
 //icons
-import SPlayLogo from "public/assets/images/LOGO.svg?react";
+import SPlayLogo from "public/assets/images/LOGO.png";
 import AmediatekaLogo from "public/assets/images/amediateka.svg?react";
 import StartLogo from "public/assets/images/start.svg?react";
 import PremierLogo from "public/assets/images/premier.png";

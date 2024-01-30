@@ -22,7 +22,8 @@
     "types": ["node"],
     "paths": {
       "@/*": ["./src/*"],
-      "public/*": ["./public/*"]
+      "public/*": ["./public/*"],
+      "pages/*": ["./src/pages/*"]
     }
   },
   "include": ["src"],

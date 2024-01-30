@@ -6,48 +6,48 @@ import { TIconNames } from "@/types/shared/icons";
 import getIcon from "@/helpers/getIcon";
 import Colors from "@/shared/color";
 import clsx from "clsx";
+import ElementShower from "../ElementShower/ElementShower";
+
+import {
+  Button as MantineButton,
+  ButtonProps as MantineButtonProps,
+} from "@mantine/core";
 
 interface Icon {
   name: TIconNames;
   fill?: keyof typeof Colors | string;
-  stroke?: string | keyof typeof Colors;
+  stroke?: string;
 }
 
-type ButtonHTMLProp = React.DetailedHTMLProps<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->;
-
-interface ButtonProps extends ButtonHTMLProp {
-  icon: Icon;
+interface ButtonProps extends MantineButtonProps {
+  icon?: Icon;
   className?: string;
-  variant: keyof typeof Colors | "white--orange-onHover";
+  styleVariant?: "white--orange-onHover" | "orange" | "white";
+  type?: "submit" | "reset" | "button";
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 const Button: FC<ButtonProps> = ({
   icon,
   className,
   children,
-  variant,
+  styleVariant = "white",
+  type,
   ...props
 }) => {
-  const {
-    stroke: iconStroke = "whiteColor",
-    name,
-    fill: fillColor = "whiteColor",
-  } = icon;
-
-  const MyIcon = getIcon(name) ?? <></>;
+  const MyIcon = icon ? getIcon(icon.name) : "svg";
 
   return (
-    <button className={clsx(s.button, s[variant], className)} {...props}>
-      <MyIcon
-        fill={fillColor ?? Colors?.[fillColor]}
-        stroke={iconStroke ?? Colors?.[iconStroke]}
-        className={s.icon}
-      />
+    <MantineButton
+      type={type}
+      {...props}
+      className={clsx(s.button, s[styleVariant], className)}
+    >
+      <ElementShower show={!!icon}>
+        <MyIcon fill={icon?.fill} stroke={icon?.stroke} className={s.icon} />
+      </ElementShower>
       {children}
-    </button>
+    </MantineButton>
   );
 };
 

@@ -3,7 +3,7 @@
 .cardWrapper {
   cursor: pointer;
   width: auto;
-  transition: ease 0.3s;
+  transition: var(--default-transition);
   min-width: 100px;
   max-width: 600px;
   max-height: 600px;
@@ -37,7 +37,7 @@
   }
 }
 .description {
-  transition: ease 0.3s;
+  transition: var(--default-transition);
   width: 100%;
   padding: 20px 20px 25px 20px;
   border-radius: 0 0 20px 20px;
@@ -84,7 +84,7 @@
       border-radius: 50%;
       border: none;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: var(--default-transition);
 
       &:hover {
         background-color: #43454b;

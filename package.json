@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "@ebay/nice-modal-react": "^1.2.13",
+    "@mantine/core": "^7.5.0",
+    "@mantine/form": "^7.5.0",
+    "@mantine/hooks": "^7.5.0",
     "axios": "^1.6.5",
     "clsx": "^2.1.0",
     "color-thief-react": "^2.1.0",
@@ -19,6 +22,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-lazy-load-image-component": "^1.6.0",
+    "react-router-dom": "^6.21.3",
     "react-slick": "^0.29.0",
     "react-use-rect": "^2.0.4",
     "sass": "^1.70.0",
@@ -43,6 +47,9 @@
     "fake-web-socket-server": "1.1.2",
     "i": "^0.3.7",
     "npm": "^10.3.0",
+    "postcss": "^8.4.33",
+    "postcss-preset-mantine": "^1.12.3",
+    "postcss-simple-vars": "^7.0.1",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
     "vite-plugin-svgr": "^4.2.0"

@@ -8,6 +8,7 @@ import PlayIcon from "public/assets/icons/icon_play.svg?react";
 import PlayWhiteIcon from "public/assets/icons/icon_play--white.svg?react";
 import VolumeIcon from "public/assets/icons/icon_volume.svg?react";
 import MutedIcon from "public/assets/icons/icon_muted.svg?react";
+import NotificationIcon from "public/assets/icons/icon_notification.svg?react";
 import { TIconNames } from "@/types/shared/icons";
 import { TSVG } from "@/types/shared/svg";
 
@@ -22,6 +23,7 @@ const getIcon = (icon: TIconNames) => {
     "PLAY--WHITE": PlayWhiteIcon,
     VOLUME: VolumeIcon,
     MUTED: MutedIcon,
+    NOTIFICATION: NotificationIcon,
   };
 
   return ICONS[icon];

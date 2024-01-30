@@ -1,0 +1,21 @@
+.input {
+  background: rgba(255, 255, 255, 0.1);
+  transition: var(--default-transition);
+  color: var(--secondary-dark-grey);
+  border-radius: 6.25rem;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  padding: 1.125rem 1.5625rem;
+  outline: none;
+  width: 100%;
+  border: 1px solid transparent;
+  &:hover {
+    background: var(--dark-light-input-hover);
+  }
+  &:focus {
+    border: 1px solid var(--light);
+  }
+}
+.error {
+  color: var(--danger);
+}

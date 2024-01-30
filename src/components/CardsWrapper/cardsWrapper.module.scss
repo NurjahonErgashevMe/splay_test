@@ -5,11 +5,11 @@
   text-align: center;
   background-color: var(--black-color);
   color: white;
-  transition: all 0.3s;
+  transition: var(--default-transition);
   margin: 20px auto;
   z-index: 1;
   &:hover {
-    transition: all 0.3s;
+    transition: var(--default-transition);
     background-color: #232738;
     cursor: pointer;
   }

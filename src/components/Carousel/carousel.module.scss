@@ -10,9 +10,9 @@
   position: static !important;
   scroll-behavior: smooth;
   display: flex;
-  transition: all 0.3s;
+  transition: var(--default-transition);
   .carouselButton {
-    transition: all 0.3s;
+    transition: var(--default-transition);
     width: 60px;
     position: absolute;
     top: 30%;

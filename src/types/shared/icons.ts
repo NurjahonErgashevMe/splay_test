@@ -5,6 +5,6 @@ type TIconNames =
   | "PLAY"
   | "PLAY--WHITE"
   | "VOLUME"
-  | "MUTED";
+  | "MUTED" | "NOTIFICATION";
 
 export type { TIconNames };

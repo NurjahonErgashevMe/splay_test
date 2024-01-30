@@ -51,11 +51,11 @@ const PrevButton: FC<CustomArrowProps> = (props) => {
   return (
     <Button
       variant="white--orange-onHover"
-      icon={{ name: "ARROW_LEFT" }}
+      icon={{ name: "ARROW_LEFT" ,fill : "black" }}
       className={clsx(s.prevButton, s.carouselButton)}
       onClick={props.onClick}
       aria-label="previous-button"
-      title="previous"
+      // title="previous"
       ria-label="Button"
       aria-labelledby="labeldiv"
     />
