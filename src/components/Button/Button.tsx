@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, HTMLProps } from "react";
 
 import s from "./button.module.scss";
 
@@ -8,18 +8,13 @@ import Colors from "@/shared/color";
 import clsx from "clsx";
 import ElementShower from "../ElementShower/ElementShower";
 
-import {
-  Button as MantineButton,
-  ButtonProps as MantineButtonProps,
-} from "@mantine/core";
-
 interface Icon {
   name: TIconNames;
   fill?: keyof typeof Colors | string;
   stroke?: string;
 }
 
-interface ButtonProps extends MantineButtonProps {
+interface ButtonProps extends Partial<HTMLProps<HTMLButtonElement>> {
   icon?: Icon;
   className?: string;
   styleVariant?: "white--orange-onHover" | "orange" | "white";
@@ -32,22 +27,17 @@ const Button: FC<ButtonProps> = ({
   className,
   children,
   styleVariant = "white",
-  type,
   ...props
 }) => {
-  const MyIcon = icon ? getIcon(icon.name) : "svg";
+  const MyIcon = icon?.name ? getIcon(icon.name) : "svg";
 
   return (
-    <MantineButton
-      type={type}
-      {...props}
-      className={clsx(s.button, s[styleVariant], className)}
-    >
-      <ElementShower show={!!icon}>
+    <button {...props} className={clsx(s.button, s[styleVariant], className)}>
+      <ElementShower show={!!icon?.name}>
         <MyIcon fill={icon?.fill} stroke={icon?.stroke} className={s.icon} />
       </ElementShower>
       {children}
-    </MantineButton>
+    </button>
   );
 };
 

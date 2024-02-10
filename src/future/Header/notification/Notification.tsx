@@ -1,6 +1,5 @@
 import { FC, useEffect, useState } from "react";
 import s from "./notification.module.scss";
-import { Center, Tooltip } from "@mantine/core";
 
 import getIcon from "@/helpers/getIcon";
 import { useHover } from "@/shared/hooks";
@@ -29,21 +28,12 @@ const Notification: FC = () => {
   }, [socket]);
 
   return (
-    <Tooltip
-      label="Уведомления"
-      withArrow
-      color="#2C2D35"
-      position="bottom"
-      opened={hovered}
-      transitionProps={{ transition: "fade", duration: 100 }}
-    >
-      <button ref={ref} className={s.notification}>
-        <ICON />
-        <ElementShower show={!!notificationLength}>
-          <Center className={s.quantity}>{notificationLength}</Center>
-        </ElementShower>
-      </button>
-    </Tooltip>
+    <button ref={ref} className={s.notification}>
+      <ICON />
+      <ElementShower show={!!notificationLength}>
+        {notificationLength}
+      </ElementShower>
+    </button>
   );
 };
 

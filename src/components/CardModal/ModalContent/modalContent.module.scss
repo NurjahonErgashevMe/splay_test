@@ -1,0 +1,37 @@
+@use "/src/breakpoints.scss" as breakpoints;
+
+.card {
+  width: auto;
+  .imageWrapper {
+    position: relative;
+    height: auto;
+    .image {
+      height: 100%;
+      border-radius: 20px;
+      @media (max-width: breakpoints.$sm) {
+        border-radius: 10px;
+      }
+    }
+  }
+}
+
+.withModal {
+  margin-right: 0;
+  .imageWrapper {
+    background: #1c1f2c;
+    position: relative;
+    border-radius: 20px 20px 0 0;
+    overflow: hidden;
+    .image {
+      border-radius: 20px 20px 0 0 !important;
+    }
+  }
+}
+
+.mute {
+  width: 30px !important;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  cursor: pointer;
+}

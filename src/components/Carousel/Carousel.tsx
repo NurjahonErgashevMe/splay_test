@@ -37,7 +37,7 @@ const NextButton: FC<CustomArrowProps & { slidesPerView: number }> = (
   }
   return (
     <Button
-      variant="white--orange-onHover"
+      styleVariant="white--orange-onHover"
       icon={{ name: "ARROW_RIGHT" }}
       className={clsx(s.nextButton, s.carouselButton)}
       onClick={props.onClick}
@@ -50,12 +50,11 @@ const PrevButton: FC<CustomArrowProps> = (props) => {
   }
   return (
     <Button
-      variant="white--orange-onHover"
-      icon={{ name: "ARROW_LEFT" ,fill : "black" }}
+      styleVariant="white--orange-onHover"
+      icon={{ name: "ARROW_LEFT" }}
       className={clsx(s.prevButton, s.carouselButton)}
       onClick={props.onClick}
       aria-label="previous-button"
-      // title="previous"
       ria-label="Button"
       aria-labelledby="labeldiv"
     />

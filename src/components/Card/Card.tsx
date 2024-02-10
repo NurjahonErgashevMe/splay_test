@@ -2,13 +2,13 @@ import {
   CSSProperties,
   FC,
   memo,
-  useCallback,
   useContext,
   useEffect,
   useState,
 } from "react";
+import Modal from "react-modal";
+
 import { MovieContent } from "@/types/movies";
-import Modal from "../CardModal/CardModal";
 
 import { useDelayedHover } from "@/shared/hooks/useDelayHover";
 
@@ -33,6 +33,8 @@ import CardContextProvider from "./context/ContextProvider";
 import { CardContext } from "./context/context";
 import IsCompany from "./components/IsCompany";
 import IsNew from "./components/IsNew";
+import ModalContent from "../CardModal/ModalContent/ModalContent";
+import CardModal from "../CardModal/CardModal";
 
 export interface CardProps extends MovieContent {
   image_src: string;
@@ -47,6 +49,8 @@ export interface CardProps extends MovieContent {
   style?: CSSProperties;
 }
 
+Modal.setAppElement("#root");
+
 const CardContent: FC<CardProps> = memo((props) => {
   const { width: viewportWidth } = useViewportSize();
   const cardContext = useContext(CardContext);
@@ -54,8 +58,6 @@ const CardContent: FC<CardProps> = memo((props) => {
   const [rect, setRect] = useState<Rect | null>(null);
   const [rectRef, revalidate] = useRect(setRect);
   const [scroll] = useWindowScroll();
-
-  NiceModal.register("card-modal", Modal);
 
   const open = (): void => {
     setOpened(() => true);
@@ -72,23 +74,23 @@ const CardContent: FC<CardProps> = memo((props) => {
   });
 
   useEffect(() => {
-    closeDropdown()
+    closeDropdown();
     return () => NiceModal.remove("card-modal");
   }, [scroll]);
 
-  const showModal = useCallback(() => {
-    if (!opened || !rect || !props.withModal) {
-      return;
-    } else if (getBreakpoint(breakpoints, viewportWidth) === breakpoints.xs)
-      return;
-    NiceModal.show("card-modal", {
-      rect,
-      ...props,
-      image_src: props.image_src,
-    });
-  }, [opened, rect, viewportWidth, cardContext?.viewElement, props.video_src]);
+  // const showModal = useCallback(() => {
+  //   if (!opened || !rect || !props.withModal) {
+  //     return;
+  //   } else if (getBreakpoint(breakpoints, viewportWidth) === breakpoints.xs)
+  //     return;
+  //   NiceModal.show("card-modal", {
+  //     ...props,
+  //     rect,
+  //     opened,
+  //   });
+  // }, [opened, rect, viewportWidth, cardContext?.viewElement, props.video_src]);
 
-  showModal();
+  // showModal();
 
   return (
     <div
@@ -124,6 +126,20 @@ const CardContent: FC<CardProps> = memo((props) => {
           <IsCompany company={props.company} title={props.title} />
         </div>
       </div>
+
+      {/* modal */}
+      {rect ? (
+        <CardModal
+          isVisible={opened}
+          cardModalContent={{ ...props, video_src: props.video_src ?? "" }}
+          rect={rect}
+          image_src={props.image_src}
+          heading=""
+          onClickCloseBtn={() => console.log("close")}
+        >
+          <ModalContent {...props} withModal={true} styles={{}} />
+        </CardModal>
+      ) : null}
     </div>
   );
 });
