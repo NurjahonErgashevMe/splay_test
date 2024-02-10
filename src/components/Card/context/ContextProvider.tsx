@@ -7,11 +7,15 @@ function CardContextProvider({ children }: PropsWithChildren) {
 
   const [muted, setMuted] = useState<boolean>(true);
 
+  const [opened, setOpened] = useState<boolean>(false);
+
   const defaultStates: ICardContext = {
     viewElement,
     setViewElement,
     muted,
     setMuted,
+    opened,
+    setOpened,
   };
   return (
     <CardContext.Provider value={defaultStates}>
